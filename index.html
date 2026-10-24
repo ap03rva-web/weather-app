@@ -3,11 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather App</title>
+  <title>Weather</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Weather App</h1>
-  <script src="script.js"></script>
+  <div class="sky" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud cloud-one"></div>
+    <div class="cloud cloud-two"></div>
+  </div>
+
+  <div class="land" aria-hidden="true">
+    <div class="hill hill-one"></div>
+    <div class="hill hill-two"></div>
+    <div class="house house-one"></div>
+    <div class="house house-two"></div>
+    <div class="house house-three"></div>
+  </div>
+
+  <main class="postcard">
+    <div class="message">
+      <h1 class="title">Weather</h1>
+      <div class="envelope" aria-hidden="true">&#9993;&#65039;</div>
+      <h2>Dear traveller,</h2>
+      <p>Name a city and we'll write back with the weather.</p>
+    </div>
+
+    <div class="address">
+      <div class="stamp" aria-hidden="true">&#9728;&#65039;</div>
+      <label for="city">To:</label>
+      <input id="city" type="text" placeholder="Type a city">
+      <button type="button">Search</button>
+      <div class="rule"></div>
+    </div>
+  </main>
 </body>
 </html>
