@@ -212,7 +212,7 @@ body {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-#result h2 { margin: 4px 0 6px; font-size: 1.35rem; font-weight: normal; }
+#result h2 { margin: 4px 0 6px; font-size: 1.35rem; font-weight: normal; overflow-wrap: anywhere; }
 #local-time { font-size: 0.9rem; }
 #feels-like { margin-top: 4px !important; font-size: 0.95rem; }
 

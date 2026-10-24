@@ -11,9 +11,17 @@ function showProblem(message) {
   problem.hidden = false;
 }
 
+// "2026-10-24 9:05" -> "09:05, 24-10-2026"
+function formatLocalTime(localTime) {
+  const [date, time] = localTime.split(" ");
+  const [year, month, day] = date.split("-");
+  return time.padStart(5, "0") + ", " + day.padStart(2, "0") + "-" + month.padStart(2, "0") + "-" + year;
+}
+
 function showResult(weather) {
+  document.getElementById("greeting").textContent = greetingFor(weather.country) + " from";
   document.getElementById("place").textContent = weather.city + ", " + weather.country;
-  document.getElementById("local-time").textContent = "Local time " + weather.localTime;
+  document.getElementById("local-time").textContent = "Local time " + formatLocalTime(weather.localTime);
   document.getElementById("temperature").textContent = Math.round(weather.temperatureC) + "°C";
   document.getElementById("description").textContent = weather.description;
   document.getElementById("feels-like").textContent = "Feels like " + Math.round(weather.feelsLikeC) + "°C";
