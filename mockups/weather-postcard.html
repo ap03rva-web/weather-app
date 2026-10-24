@@ -6,184 +6,195 @@
   <title>Mockup C - Weather Postcard</title>
   <style>
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 24px 16px 48px;
-      font-family: Georgia, "Times New Roman", serif;
-      background: #e9e4da;
-      color: #33302a;
+    html, body { margin: 0; min-height: 100%; }
+    body { font-family: Georgia, "Times New Roman", serif; }
+    .sr { position: absolute; opacity: 0; pointer-events: none; }
+
+    .app {
+      --ink: #3b342a; --paper: #fdf8ec; --line: #d9cdb3;
+      --hill1: #86b86f; --hill2: #62a05a; --house: #f6e6c6; --roof: #c9694f; --win: rgba(255,255,255,0.7);
+      position: relative; min-height: 100vh; overflow: hidden; color: var(--ink);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 28px 16px 150px;
     }
-    h1 { text-align: center; margin: 0 0 4px; font-size: 1.6rem; }
-    .note { text-align: center; margin: 0 auto 24px; max-width: 560px; font-size: 0.95rem; }
+    #wr:checked ~ .app { --hill1: #6f9484; --hill2: #55796a; --house: #e9e2d6; --roof: #85625b; --paper: #f7f3ea; }
+    #wn:checked ~ .app { --hill1: #22434f; --hill2: #17313b; --house: #3d4a70; --roof: #2a3354; --win: #ffd966; --paper: #f1ead6; }
 
-    .swatches { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
-    .swatch { padding: 6px 14px; border-radius: 4px; font-size: 0.85rem; }
+    .ws, .wr, .wn { display: none; }
+    #ws:checked ~ .app .ws, #wr:checked ~ .app .wr, #wn:checked ~ .app .wn { display: revert; }
+    .p { display: none; }
+    #v1:checked ~ .app .p1, #v2:checked ~ .app .p2, #v3:checked ~ .app .p3, #v4:checked ~ .app .p4 { display: flex; }
 
-    /* each view is a full "page"; on laptop they are wide, on phone they are narrow */
-    .views { display: flex; flex-direction: column; gap: 32px; align-items: center; }
-    .view { width: 100%; max-width: 380px; }
-    .view h2 { font-size: 1rem; margin: 0 0 8px; text-align: center; }
-
-    .screen {
-      min-height: 560px;
-      border-radius: 18px;
-      padding: 22px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    /* ---------- sky ---------- */
+    .scene { position: absolute; inset: 0; display: none; }
+    #ws:checked ~ .app .s-sun, #wr:checked ~ .app .s-rain, #wn:checked ~ .app .s-night { display: block; }
+    .s-sun   { background: linear-gradient(#9bd8ff, #e4f5ff 55%, #fff1cf); }
+    .s-rain  { background: linear-gradient(#8e9aa8, #b9c3ce 70%, #d3dae2); }
+    .s-night { background: linear-gradient(#10143a, #2b3170 70%, #454a95); }
+    .sun {
+      position: absolute; top: 8%; left: 8%; width: 80px; height: 80px; border-radius: 50%; background: #ffd34d;
+      box-shadow: 0 0 0 12px rgba(255,211,77,0.35), 0 0 70px 40px rgba(255,236,160,0.6);
     }
-    .sunny { background: #f7c873; }
-    .rainy { background: #94a9bd; }
-    .calm  { background: #d8cfbf; }
-
-    .to { display: flex; flex-direction: column; gap: 8px; }
-    .to label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
-    .to .row { display: flex; gap: 8px; }
-    .to input {
-      flex: 1; min-width: 0;
-      padding: 8px 4px; font-size: 1.1rem; font-family: inherit;
-      border: 0; border-bottom: 2px solid #33302a; background: transparent;
+    .cloud { position: absolute; width: 130px; height: 42px; background: #fff; border-radius: 42px; animation: drift linear infinite; }
+    .cloud::before, .cloud::after { content: ""; position: absolute; background: inherit; border-radius: 50%; }
+    .cloud::before { width: 56px; height: 56px; top: -28px; left: 20px; }
+    .cloud::after  { width: 72px; height: 72px; top: -38px; left: 54px; }
+    .s-rain .cloud { background: #8a96a5; }
+    @keyframes drift { from { transform: translateX(-200px); } to { transform: translateX(calc(100vw + 200px)); } }
+    .rain {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(104deg, transparent 46%, rgba(255,255,255,0.5) 47%, transparent 49%);
+      background-size: 26px 70px; animation: fall 0.8s linear infinite;
     }
-    .to button {
-      padding: 10px 18px; font-size: 1rem; font-family: inherit;
-      border: 2px solid #33302a; border-radius: 4px; background: #33302a; color: #fdf8ec;
+    @keyframes fall { to { background-position: -26px 70px; } }
+    .stars {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 80px 90px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 140px 50px, #cfd8ff, transparent),
+        radial-gradient(1px 1px at 60px 150px, #fff, transparent);
+      background-size: 180px 180px; animation: twinkle 4s ease-in-out infinite alternate;
     }
+    @keyframes twinkle { from { opacity: 0.5; } to { opacity: 1; } }
+    .moon { position: absolute; top: 8%; left: 10%; width: 64px; height: 64px; border-radius: 50%; box-shadow: 13px 11px 0 0 #f6f1d6; filter: drop-shadow(0 0 14px rgba(246,241,214,0.5)); }
 
+    /* ---------- little landscape along the bottom ---------- */
+    .land { position: absolute; left: 0; right: 0; bottom: 0; height: 260px; z-index: 0; }
+    .hill { position: absolute; border-radius: 50%; }
+    .h1 { left: -20%; bottom: -150px; width: 80%; height: 300px; background: var(--hill1); }
+    .h2 { right: -25%; bottom: -170px; width: 95%; height: 320px; background: var(--hill2); }
+    .house { position: absolute; width: 44px; height: 34px; background: var(--house); }
+    .house::before {
+      content: ""; position: absolute; top: -22px; left: -6px;
+      border-left: 28px solid transparent; border-right: 28px solid transparent; border-bottom: 24px solid var(--roof);
+    }
+    .house::after { content: ""; position: absolute; left: 17px; top: 11px; width: 10px; height: 10px; background: var(--win); box-shadow: 0 0 8px var(--win); }
+    #wn:checked ~ .app .house::after { box-shadow: 0 0 12px 3px rgba(255,217,102,0.8); }
+
+    /* ---------- the postcard ---------- */
     .postcard {
-      position: relative;
-      background: #fdf8ec;
-      border-radius: 6px;
-      padding: 24px 20px 26px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+      position: relative; z-index: 1; width: 100%; max-width: 480px;
+      background: var(--paper); border-radius: 8px; padding: 26px 22px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.25); flex-direction: column; gap: 22px;
     }
-    .postcard::before {
-      content: ""; position: absolute; inset: 8px;
-      border: 2px dashed #c9bfa8; border-radius: 3px; pointer-events: none;
-    }
+    .postcard::before { content: ""; position: absolute; inset: 8px; border: 2px dashed var(--line); border-radius: 4px; pointer-events: none; }
+    .msg { text-align: center; position: relative; }
+    .addr { order: -1; position: relative; display: flex; flex-direction: column; gap: 10px; }
     .stamp {
-      align-self: flex-end;
-      width: 76px; height: 88px;
-      background: #fff;
-      border: 3px dotted #b9ad92;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.6rem;
+      align-self: flex-end; width: 64px; height: 76px; background: #fff; border: 3px dotted #b9ad92;
+      display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 2px;
     }
-    .city { margin: 0; font-size: 1.3rem; }
-    .city small { display: block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .temp { font-size: 4rem; margin: 0; line-height: 1; }
-    .desc { margin: 0; font-style: italic; font-size: 1.1rem; }
-    .extras { display: flex; gap: 22px; border-top: 2px solid #33302a; padding-top: 12px; }
-    .extras small { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }
-    .extras strong { font-size: 1.1rem; }
-
-    .centre { align-items: center; justify-content: center; text-align: center; }
-    .big-emoji { font-size: 3.4rem; }
-    .quip { font-size: 1.2rem; margin: 0; }
-    .return {
-      border: 3px solid #b3402e; color: #b3402e;
-      padding: 6px 14px; font-weight: bold; letter-spacing: 0.12em; text-transform: uppercase;
-      transform: rotate(-6deg); font-size: 1rem;
+    .addr label { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .addr input {
+      border: 0; border-bottom: 2px solid var(--ink); background: transparent;
+      padding: 8px 2px; font-size: 1.15rem; font-family: inherit; color: var(--ink); outline: none;
     }
+    .addr button {
+      border: 0; border-radius: 4px; padding: 11px; font-size: 1rem; font-family: inherit;
+      background: var(--ink); color: var(--paper);
+    }
+    .rule { height: 2px; background: var(--line); margin-top: 6px; }
 
-    /* laptop: the postcard turns landscape, search bar sits underneath */
+    .small { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; margin: 0; }
+    .msg h2 { margin: 4px 0 6px; font-size: 1.35rem; font-weight: normal; }
+    .msg p { margin: 0; font-style: italic; }
+    .big { font-size: 4.4rem; line-height: 1; margin: 6px 0; }
+    .icon { font-size: 3.2rem; line-height: 1.2; }
+    .stats { display: flex; justify-content: center; gap: 28px; margin-top: 16px; padding-top: 12px; border-top: 2px solid var(--ink); }
+    .stats small { display: block; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .stats b { font-size: 1.15rem; font-weight: normal; }
+
+    /* ---------- mockup controls (not part of the design) ---------- */
+    .ctl {
+      position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 5;
+      width: max-content; max-width: calc(100% - 24px);
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px;
+      background: rgba(30,26,20,0.85); color: #fff; padding: 8px 12px; border-radius: 16px;
+      font-family: "Segoe UI", Helvetica, Arial, sans-serif; font-size: 0.78rem;
+    }
+    .grp { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+    .ctl label { padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); cursor: pointer; }
+    #v1:checked ~ .app label[for=v1], #v2:checked ~ .app label[for=v2], #v3:checked ~ .app label[for=v3], #v4:checked ~ .app label[for=v4],
+    #ws:checked ~ .app label[for=ws], #wr:checked ~ .app label[for=wr], #wn:checked ~ .app label[for=wn] { background: #fff; color: #111; }
+
+    /* ---------- laptop: the postcard turns landscape ---------- */
     @media (min-width: 900px) {
-      .view.wide { max-width: 860px; }
-      .view.wide .screen { min-height: 440px; flex-direction: column-reverse; }
-      .view.wide .postcard { flex-direction: row; align-items: center; gap: 40px; padding: 32px 36px; }
-      .view.wide .postcard .left { flex: 1; text-align: center; }
-      .view.wide .postcard .right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
-      .view.wide .stamp { position: absolute; top: 20px; right: 24px; }
-      .view.wide .to .row { max-width: 520px; }
+      .app { padding-bottom: 120px; }
+      .postcard { max-width: 880px; flex-direction: row; align-items: stretch; gap: 0; padding: 40px 44px; min-height: 380px; }
+      .msg { flex: 1.3; display: flex; flex-direction: column; justify-content: center; padding-right: 44px; border-right: 2px solid var(--line); }
+      .addr { order: 0; flex: 1; padding-left: 44px; justify-content: center; }
+      .big { font-size: 5.6rem; }
+      .icon { font-size: 4rem; }
+      .stamp { position: absolute; top: 0; right: 0; }
+      .addr { padding-top: 70px; }
     }
-    /* on a phone these two wrappers just stack */
-    .postcard .left, .postcard .right { display: flex; flex-direction: column; gap: 14px; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
   </style>
 </head>
 <body>
-  <h1>C. Weather Postcard</h1>
-  <p class="note">A postcard from wherever you searched. Phone-sized views in a column; on a laptop the result turns landscape. Mockup only: nothing here works.</p>
+  <input class="sr" type="radio" name="v" id="v1" checked><input class="sr" type="radio" name="v" id="v2"><input class="sr" type="radio" name="v" id="v3"><input class="sr" type="radio" name="v" id="v4">
+  <input class="sr" type="radio" name="w" id="ws" checked><input class="sr" type="radio" name="w" id="wr"><input class="sr" type="radio" name="w" id="wn">
 
-  <div class="swatches">
-    <span class="swatch" style="background:#f7c873">Sunny</span>
-    <span class="swatch" style="background:#94a9bd">Rainy</span>
-    <span class="swatch" style="background:#e2e6f0">Snowy</span>
-    <span class="swatch" style="background:#3f4a66;color:#fdf8ec">Night</span>
-  </div>
-
-  <div class="views">
-
-    <div class="view">
-      <h2>1. Before searching</h2>
-      <div class="screen calm">
-        <div class="to">
-          <label for="c1">To:</label>
-          <div class="row"><input id="c1" type="text" placeholder="Type a city"><button>Search</button></div>
-        </div>
-        <div class="postcard centre">
-          <div class="big-emoji">&#9993;&#65039;</div>
-          <p class="quip">Your postcard is blank. Name a city and I'll fill it in.</p>
-        </div>
-      </div>
+  <div class="app">
+    <div class="scene s-sun">
+      <div class="sun"></div>
+      <div class="cloud" style="top:20%;animation-duration:75s"></div>
+      <div class="cloud" style="top:44%;animation-duration:100s;animation-delay:-45s;transform:scale(1.3)"></div>
+    </div>
+    <div class="scene s-rain">
+      <div class="cloud" style="top:8%;animation-duration:65s;transform:scale(1.6)"></div>
+      <div class="cloud" style="top:30%;animation-duration:90s;animation-delay:-35s"></div>
+      <div class="rain"></div>
+    </div>
+    <div class="scene s-night">
+      <div class="stars"></div><div class="moon"></div>
     </div>
 
-    <div class="view">
-      <h2>2. Loading</h2>
-      <div class="screen rainy">
-        <div class="to">
-          <label for="c2">To:</label>
-          <div class="row"><input id="c2" type="text" value="Lowtide-on-Sea"><button>Search</button></div>
-        </div>
-        <div class="postcard centre">
-          <div class="big-emoji">&#128236;</div>
-          <p class="quip">Loading...</p>
-          <p class="desc">Posting your weather</p>
-        </div>
-      </div>
+    <div class="land">
+      <div class="hill h1"></div><div class="hill h2"></div>
+      <div class="house" style="left:9%;bottom:132px"></div>
+      <div class="house" style="left:20%;bottom:118px;transform:scale(.8)"></div>
+      <div class="house" style="right:12%;bottom:128px"></div>
     </div>
 
-    <div class="view wide">
-      <h2>3. Weather result (phone shown narrow, laptop shown landscape)</h2>
-      <div class="screen sunny">
-        <div class="to">
-          <label for="c3">To:</label>
-          <div class="row"><input id="c3" type="text" value="Lowtide-on-Sea"><button>Search</button></div>
-        </div>
-        <div class="postcard">
-          <div class="stamp">&#9728;&#65039;</div>
-          <div class="left">
-            <h3 class="city"><small>Greetings from</small>Lowtide-on-Sea, Fictionland</h3>
-            <div class="temp">24&deg;C</div>
-          </div>
-          <div class="right">
-            <p class="desc">Sunny with a few clouds</p>
-            <div class="extras">
-              <div><small>Humidity</small><strong>58%</strong></div>
-              <div><small>Wind</small><strong>14 km/h</strong></div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="p p1 postcard">
+      <div class="msg"><div class="icon">&#9993;&#65039;</div><h2>Dear traveller,</h2><p>Name a city and we'll write back with the weather.</p></div>
+      <div class="addr"><div class="stamp"><span class="ws">&#9728;&#65039;</span><span class="wr">&#127783;&#65039;</span><span class="wn">&#127769;</span></div>
+        <label>To:</label><input type="text" placeholder="Type a city" aria-label="City"><button>Search</button><div class="rule"></div></div>
     </div>
 
-    <div class="view">
-      <h2>4. City not found</h2>
-      <div class="screen calm">
-        <div class="to">
-          <label for="c4">To:</label>
-          <div class="row"><input id="c4" type="text" value="Zzxqwv"><button>Search</button></div>
-        </div>
-        <div class="postcard centre">
-          <div class="return">Return to sender</div>
-          <p class="quip">Address unknown. Check the spelling?</p>
-        </div>
-      </div>
+    <div class="p p2 postcard">
+      <div class="msg"><div class="icon">&#128236;</div><h2>Loading...</h2><p>Writing it all down for you.</p></div>
+      <div class="addr"><div class="stamp"><span class="ws">&#9728;&#65039;</span><span class="wr">&#127783;&#65039;</span><span class="wn">&#127769;</span></div>
+        <label>To:</label><input type="text" value="Lowtide-on-Sea" aria-label="City"><button>Search</button><div class="rule"></div></div>
     </div>
 
+    <div class="p p3 postcard">
+      <div class="msg">
+        <p class="small">Greetings from</p>
+        <h2>Lowtide-on-Sea, Fictionland</h2>
+        <div class="big"><span class="ws">24</span><span class="wr">14</span><span class="wn">11</span>&deg;C</div>
+        <p><span class="ws">Sunny with a few clouds</span><span class="wr">Light, steady rain</span><span class="wn">Clear and quiet</span></p>
+        <div class="stats">
+          <div><small>Humidity</small><b><span class="ws">58</span><span class="wr">82</span><span class="wn">64</span>%</b></div>
+          <div><small>Wind</small><b><span class="ws">14</span><span class="wr">19</span><span class="wn">8</span> km/h</b></div>
+        </div>
+      </div>
+      <div class="addr"><div class="stamp"><span class="ws">&#9728;&#65039;</span><span class="wr">&#127783;&#65039;</span><span class="wn">&#127769;</span></div>
+        <label>To:</label><input type="text" value="Lowtide-on-Sea" aria-label="City"><button>Search</button><div class="rule"></div></div>
+    </div>
+
+    <div class="p p4 postcard">
+      <div class="msg"><div class="icon">&#129517;</div><h2>Hmm, we couldn't find that place.</h2><p>Could you check the spelling and try once more?</p></div>
+      <div class="addr"><div class="stamp"><span class="ws">&#9728;&#65039;</span><span class="wr">&#127783;&#65039;</span><span class="wn">&#127769;</span></div>
+        <label>To:</label><input type="text" value="Zzxqwv" aria-label="City"><button>Search</button><div class="rule"></div></div>
+    </div>
+
+    <div class="ctl">
+      <div class="grp"><label for="v1">Before searching</label><label for="v2">Loading</label><label for="v3">Result</label><label for="v4">Not found</label></div>
+      <div class="grp"><label for="ws">Sunny</label><label for="wr">Rainy</label><label for="wn">Night</label></div>
+    </div>
   </div>
 </body>
 </html>
