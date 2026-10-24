@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockup B - Sticker Sheet</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { font-family: "Arial Rounded MT Bold", "Trebuchet MS", Verdana, sans-serif; }
+    .sr { position: absolute; opacity: 0; pointer-events: none; }
+
+    /* ---------- weather colours: the whole page is a pattern ---------- */
+    .app {
+      --ink: #1b1b1b; --paper: #fffaf0; --accent: #ff9f1c;
+      position: relative; min-height: 100vh; overflow: hidden; color: var(--ink);
+      padding: 30px 18px 150px;
+    }
+    #ws:checked ~ .app {
+      background: repeating-conic-gradient(from 0deg at 85% 10%, #ffd23f 0 7deg, #ffe680 7deg 14deg);
+    }
+    #wr:checked ~ .app {
+      --accent: #4f8fd9;
+      background-color: #7db3e8;
+      background-image:
+        radial-gradient(ellipse 3px 10px at 12px 14px, rgba(255,255,255,0.8) 95%, transparent),
+        radial-gradient(ellipse 3px 10px at 44px 46px, rgba(255,255,255,0.8) 95%, transparent);
+      background-size: 60px 60px; animation: drops 1.4s linear infinite;
+    }
+    @keyframes drops { to { background-position: 0 60px, 0 60px; } }
+    #wn:checked ~ .app {
+      --accent: #ffd23f;
+      background-color: #1f2358;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(3px 3px at 90px 70px, #ffe27a, transparent),
+        radial-gradient(2px 2px at 150px 140px, #fff, transparent),
+        radial-gradient(2px 2px at 50px 120px, #cfd8ff, transparent);
+      background-size: 200px 200px;
+    }
+
+    .ws, .wr, .wn { display: none; }
+    #ws:checked ~ .app .ws, #wr:checked ~ .app .wr, #wn:checked ~ .app .wn { display: revert; }
+    .p { display: none; }
+    #v1:checked ~ .app .p1, #v2:checked ~ .app .p2, #v3:checked ~ .app .p3, #v4:checked ~ .app .p4 { display: flex; }
+
+    /* sticker doodles in the corners */
+    .decos i { position: absolute; font-style: normal; font-size: 3.6rem; opacity: 0.95; pointer-events: none; }
+    .decos i:nth-child(1) { top: 14px; right: 14px; transform: rotate(12deg); }
+    .decos i:nth-child(2) { bottom: 110px; left: 8px; transform: rotate(-14deg); font-size: 4.4rem; }
+    .decos i:nth-child(3) { bottom: 130px; right: 20px; transform: rotate(8deg); }
+
+    /* ---------- layout ---------- */
+    .wrap { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; }
+    .logo {
+      display: inline-block; background: var(--paper); border: 4px solid var(--ink); border-radius: 16px;
+      padding: 6px 16px; transform: rotate(-3deg); box-shadow: 4px 4px 0 var(--ink);
+      font-size: 1.3rem; margin-bottom: 30px;
+    }
+    .p { flex-direction: column; gap: 34px; }
+
+    .search {
+      background: var(--paper); border: 4px solid var(--ink); border-radius: 22px; padding: 16px;
+      box-shadow: 6px 6px 0 var(--ink); display: flex; flex-direction: column; gap: 10px;
+    }
+    .search label { font-size: 0.95rem; }
+    .search input {
+      border: 3px solid var(--ink); border-radius: 14px; padding: 12px 14px;
+      font-size: 1.1rem; font-family: inherit; background: #fff;
+    }
+    .search button {
+      border: 4px solid var(--ink); border-radius: 14px; padding: 12px; font-size: 1.1rem; font-family: inherit;
+      background: var(--accent); color: var(--ink); box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .sticker {
+      position: relative; background: var(--paper); border: 4px solid var(--ink); border-radius: 26px;
+      padding: 40px 20px 46px; text-align: center; transform: rotate(-1.5deg); box-shadow: 8px 8px 0 var(--ink);
+    }
+    .sticker h2 { margin: 0 0 4px; font-size: 1.4rem; }
+    .sticker p { margin: 4px 0 0; font-family: "Trebuchet MS", Verdana, sans-serif; }
+    .icon { font-size: 4.2rem; line-height: 1.2; }
+    .temp {
+      position: absolute; top: -34px; right: -10px; width: 118px; height: 118px; border-radius: 50%;
+      background: var(--accent); border: 4px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+      display: flex; align-items: center; justify-content: center; font-size: 2.1rem; transform: rotate(8deg);
+    }
+    .pills { position: absolute; left: 0; right: 0; bottom: -22px; display: flex; justify-content: center; gap: 12px; }
+    .pill {
+      background: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 6px 14px;
+      font-size: 0.95rem; transform: rotate(2deg);
+    }
+    .pill + .pill { transform: rotate(-2deg); }
+
+    /* ---------- mockup controls (not part of the design) ---------- */
+    .ctl {
+      position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 5;
+      width: max-content; max-width: calc(100% - 24px);
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px;
+      background: rgba(20,24,40,0.85); color: #fff; padding: 8px 12px; border-radius: 16px; font-size: 0.78rem;
+    }
+    .grp { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+    .ctl label { padding: 5px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); cursor: pointer; }
+    #v1:checked ~ .app label[for=v1], #v2:checked ~ .app label[for=v2], #v3:checked ~ .app label[for=v3], #v4:checked ~ .app label[for=v4],
+    #ws:checked ~ .app label[for=ws], #wr:checked ~ .app label[for=wr], #wn:checked ~ .app label[for=wn] { background: #fff; color: #111; }
+
+    /* ---------- laptop: search on the left, sticker on the right ---------- */
+    @media (min-width: 900px) {
+      .app { padding-top: 7vh; }
+      .wrap { max-width: 1020px; }
+      .logo { font-size: 1.8rem; margin-bottom: 44px; }
+      .p { flex-direction: row; align-items: flex-start; gap: 64px; }
+      .search { flex: 0 0 340px; }
+      .sticker { flex: 1; padding: 56px 40px 60px; }
+      .temp { width: 150px; height: 150px; font-size: 2.8rem; top: -44px; right: -14px; }
+      .icon { font-size: 5.5rem; }
+      .sticker h2 { font-size: 1.9rem; }
+      .decos i { font-size: 5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</head>
+<body>
+  <input class="sr" type="radio" name="v" id="v1" checked><input class="sr" type="radio" name="v" id="v2"><input class="sr" type="radio" name="v" id="v3"><input class="sr" type="radio" name="v" id="v4">
+  <input class="sr" type="radio" name="w" id="ws" checked><input class="sr" type="radio" name="w" id="wr"><input class="sr" type="radio" name="w" id="wn">
+
+  <div class="app">
+    <div class="decos ws"><i>&#9728;&#65039;</i><i>&#127803;</i><i>&#128526;</i></div>
+    <div class="decos wr"><i>&#9748;</i><i>&#127784;&#65039;</i><i>&#128167;</i></div>
+    <div class="decos wn"><i>&#127769;</i><i>&#11088;</i><i>&#129417;</i></div>
+
+    <div class="wrap">
+      <div class="logo">&#127780;&#65039; weather</div>
+
+      <div class="p p1">
+        <div class="search"><label>Which city?</label><input type="text" placeholder="Type a city" aria-label="City"><button>Search</button></div>
+        <div class="sticker">
+          <div class="icon">&#128301;</div>
+          <h2>Pick a city</h2>
+          <p>We'll go and see what the sky is up to.</p>
+        </div>
+      </div>
+
+      <div class="p p2">
+        <div class="search"><label>Which city?</label><input type="text" value="Lowtide-on-Sea" aria-label="City"><button>Search</button></div>
+        <div class="sticker">
+          <div class="icon">&#9203;</div>
+          <h2>Loading...</h2>
+          <p>Just a moment, we're fetching it for you.</p>
+        </div>
+      </div>
+
+      <div class="p p3">
+        <div class="search"><label>Which city?</label><input type="text" value="Lowtide-on-Sea" aria-label="City"><button>Search</button></div>
+        <div class="sticker">
+          <div class="temp"><span class="ws">24</span><span class="wr">14</span><span class="wn">11</span>&deg;C</div>
+          <div class="icon"><span class="ws">&#9728;&#65039;</span><span class="wr">&#127783;&#65039;</span><span class="wn">&#127769;</span></div>
+          <h2>Lowtide-on-Sea, Fictionland</h2>
+          <p><span class="ws">Sunny with a few clouds</span><span class="wr">Light, steady rain</span><span class="wn">Clear and quiet</span></p>
+          <div class="pills">
+            <span class="pill">Humidity <span class="ws">58</span><span class="wr">82</span><span class="wn">64</span>%</span>
+            <span class="pill">Wind <span class="ws">14</span><span class="wr">19</span><span class="wn">8</span> km/h</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p p4">
+        <div class="search"><label>Which city?</label><input type="text" value="Zzxqwv" aria-label="City"><button>Search</button></div>
+        <div class="sticker">
+          <div class="icon">&#129517;</div>
+          <h2>Hmm, we couldn't find that place.</h2>
+          <p>Could you check the spelling and try once more?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctl">
+      <div class="grp"><label for="v1">Before searching</label><label for="v2">Loading</label><label for="v3">Result</label><label for="v4">Not found</label></div>
+      <div class="grp"><label for="ws">Sunny</label><label for="wr">Rainy</label><label for="wn">Night</label></div>
+    </div>
+  </div>
+</body>
+</html>

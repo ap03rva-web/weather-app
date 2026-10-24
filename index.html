@@ -3,11 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather App</title>
+  <title>Weather</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Weather App</h1>
+  <div class="sky" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud cloud-one"></div>
+    <div class="cloud cloud-two"></div>
+  </div>
+
+  <div class="land" aria-hidden="true">
+    <div class="hill hill-one"></div>
+    <div class="hill hill-two"></div>
+    <div class="house house-one"></div>
+    <div class="house house-two"></div>
+    <div class="house house-three"></div>
+  </div>
+
+  <main class="postcard">
+    <div class="message">
+      <h1 class="title">Weather</h1>
+
+      <div id="welcome">
+        <div class="envelope" aria-hidden="true">&#9993;&#65039;</div>
+        <h2>Dear traveller,</h2>
+        <p>Name a city and we'll write back with the weather.</p>
+      </div>
+
+      <div id="result" hidden>
+        <p class="small" id="greeting"></p>
+        <h2 id="place"></h2>
+        <p id="local-time"></p>
+        <div class="big" id="temperature"></div>
+        <p id="description"></p>
+        <p id="feels-like"></p>
+        <div class="stats">
+          <div><small>Humidity</small><b id="humidity"></b></div>
+          <div><small>Wind</small><b id="wind"></b></div>
+        </div>
+      </div>
+    </div>
+
+    <form class="address" id="search-form">
+      <div class="stamp">
+        <span id="stamp-emoji" aria-hidden="true">&#9728;&#65039;</span>
+        <img id="stamp-icon" alt="" hidden>
+      </div>
+      <label for="city">To:</label>
+      <input id="city" type="text" placeholder="Type a city">
+      <button type="submit">Search</button>
+      <p class="problem" id="problem" role="alert" hidden></p>
+      <div class="rule"></div>
+    </form>
+  </main>
+
+  <script src="greetings.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
