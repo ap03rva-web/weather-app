@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockup C - Weather Postcard</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px 48px;
+      font-family: Georgia, "Times New Roman", serif;
+      background: #e9e4da;
+      color: #33302a;
+    }
+    h1 { text-align: center; margin: 0 0 4px; font-size: 1.6rem; }
+    .note { text-align: center; margin: 0 auto 24px; max-width: 560px; font-size: 0.95rem; }
+
+    .swatches { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .swatch { padding: 6px 14px; border-radius: 4px; font-size: 0.85rem; }
+
+    /* each view is a full "page"; on laptop they are wide, on phone they are narrow */
+    .views { display: flex; flex-direction: column; gap: 32px; align-items: center; }
+    .view { width: 100%; max-width: 380px; }
+    .view h2 { font-size: 1rem; margin: 0 0 8px; text-align: center; }
+
+    .screen {
+      min-height: 560px;
+      border-radius: 18px;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    }
+    .sunny { background: #f7c873; }
+    .rainy { background: #94a9bd; }
+    .calm  { background: #d8cfbf; }
+
+    .to { display: flex; flex-direction: column; gap: 8px; }
+    .to label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .to .row { display: flex; gap: 8px; }
+    .to input {
+      flex: 1; min-width: 0;
+      padding: 8px 4px; font-size: 1.1rem; font-family: inherit;
+      border: 0; border-bottom: 2px solid #33302a; background: transparent;
+    }
+    .to button {
+      padding: 10px 18px; font-size: 1rem; font-family: inherit;
+      border: 2px solid #33302a; border-radius: 4px; background: #33302a; color: #fdf8ec;
+    }
+
+    .postcard {
+      position: relative;
+      background: #fdf8ec;
+      border-radius: 6px;
+      padding: 24px 20px 26px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .postcard::before {
+      content: ""; position: absolute; inset: 8px;
+      border: 2px dashed #c9bfa8; border-radius: 3px; pointer-events: none;
+    }
+    .stamp {
+      align-self: flex-end;
+      width: 76px; height: 88px;
+      background: #fff;
+      border: 3px dotted #b9ad92;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6rem;
+    }
+    .city { margin: 0; font-size: 1.3rem; }
+    .city small { display: block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .temp { font-size: 4rem; margin: 0; line-height: 1; }
+    .desc { margin: 0; font-style: italic; font-size: 1.1rem; }
+    .extras { display: flex; gap: 22px; border-top: 2px solid #33302a; padding-top: 12px; }
+    .extras small { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .extras strong { font-size: 1.1rem; }
+
+    .centre { align-items: center; justify-content: center; text-align: center; }
+    .big-emoji { font-size: 3.4rem; }
+    .quip { font-size: 1.2rem; margin: 0; }
+    .return {
+      border: 3px solid #b3402e; color: #b3402e;
+      padding: 6px 14px; font-weight: bold; letter-spacing: 0.12em; text-transform: uppercase;
+      transform: rotate(-6deg); font-size: 1rem;
+    }
+
+    /* laptop: the postcard turns landscape, search bar sits underneath */
+    @media (min-width: 900px) {
+      .view.wide { max-width: 860px; }
+      .view.wide .screen { min-height: 440px; flex-direction: column-reverse; }
+      .view.wide .postcard { flex-direction: row; align-items: center; gap: 40px; padding: 32px 36px; }
+      .view.wide .postcard .left { flex: 1; text-align: center; }
+      .view.wide .postcard .right { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+      .view.wide .stamp { position: absolute; top: 20px; right: 24px; }
+      .view.wide .to .row { max-width: 520px; }
+    }
+    /* on a phone these two wrappers just stack */
+    .postcard .left, .postcard .right { display: flex; flex-direction: column; gap: 14px; }
+  </style>
+</head>
+<body>
+  <h1>C. Weather Postcard</h1>
+  <p class="note">A postcard from wherever you searched. Phone-sized views in a column; on a laptop the result turns landscape. Mockup only: nothing here works.</p>
+
+  <div class="swatches">
+    <span class="swatch" style="background:#f7c873">Sunny</span>
+    <span class="swatch" style="background:#94a9bd">Rainy</span>
+    <span class="swatch" style="background:#e2e6f0">Snowy</span>
+    <span class="swatch" style="background:#3f4a66;color:#fdf8ec">Night</span>
+  </div>
+
+  <div class="views">
+
+    <div class="view">
+      <h2>1. Before searching</h2>
+      <div class="screen calm">
+        <div class="to">
+          <label for="c1">To:</label>
+          <div class="row"><input id="c1" type="text" placeholder="Type a city"><button>Search</button></div>
+        </div>
+        <div class="postcard centre">
+          <div class="big-emoji">&#9993;&#65039;</div>
+          <p class="quip">Your postcard is blank. Name a city and I'll fill it in.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="view">
+      <h2>2. Loading</h2>
+      <div class="screen rainy">
+        <div class="to">
+          <label for="c2">To:</label>
+          <div class="row"><input id="c2" type="text" value="Lowtide-on-Sea"><button>Search</button></div>
+        </div>
+        <div class="postcard centre">
+          <div class="big-emoji">&#128236;</div>
+          <p class="quip">Loading...</p>
+          <p class="desc">Posting your weather</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="view wide">
+      <h2>3. Weather result (phone shown narrow, laptop shown landscape)</h2>
+      <div class="screen sunny">
+        <div class="to">
+          <label for="c3">To:</label>
+          <div class="row"><input id="c3" type="text" value="Lowtide-on-Sea"><button>Search</button></div>
+        </div>
+        <div class="postcard">
+          <div class="stamp">&#9728;&#65039;</div>
+          <div class="left">
+            <h3 class="city"><small>Greetings from</small>Lowtide-on-Sea, Fictionland</h3>
+            <div class="temp">24&deg;C</div>
+          </div>
+          <div class="right">
+            <p class="desc">Sunny with a few clouds</p>
+            <div class="extras">
+              <div><small>Humidity</small><strong>58%</strong></div>
+              <div><small>Wind</small><strong>14 km/h</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view">
+      <h2>4. City not found</h2>
+      <div class="screen calm">
+        <div class="to">
+          <label for="c4">To:</label>
+          <div class="row"><input id="c4" type="text" value="Zzxqwv"><button>Search</button></div>
+        </div>
+        <div class="postcard centre">
+          <div class="return">Return to sender</div>
+          <p class="quip">Address unknown. Check the spelling?</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
