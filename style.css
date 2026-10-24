@@ -200,6 +200,37 @@ body {
 
 .rule { height: 2px; margin-top: 6px; background: var(--line); }
 
+/* ---------- weather result ---------- */
+[hidden] { display: none !important; }
+
+.stamp img { width: 56px; height: 56px; }
+
+#result p { margin: 0; font-style: italic; }
+#result .small {
+  font-size: 0.75rem;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+#result h2 { margin: 4px 0 6px; font-size: 1.35rem; font-weight: normal; }
+#local-time { font-size: 0.9rem; }
+#feels-like { margin-top: 4px !important; font-size: 0.95rem; }
+
+.big { margin: 6px 0; font-size: 4.4rem; line-height: 1; }
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ink);
+}
+.stats small { display: block; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.stats b { font-size: 1.15rem; font-weight: normal; }
+
+.problem { margin: 4px 0 0; font-size: 0.95rem; }
+
 /* ---------- laptop: the postcard turns landscape ---------- */
 @media (min-width: 900px) {
   .postcard {
@@ -229,6 +260,7 @@ body {
 
   .stamp { position: absolute; top: 0; right: 0; }
   .envelope { font-size: 4rem; }
+  .big { font-size: 5.6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

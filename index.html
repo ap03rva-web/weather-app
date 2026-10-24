@@ -24,18 +24,40 @@
   <main class="postcard">
     <div class="message">
       <h1 class="title">Weather</h1>
-      <div class="envelope" aria-hidden="true">&#9993;&#65039;</div>
-      <h2>Dear traveller,</h2>
-      <p>Name a city and we'll write back with the weather.</p>
+
+      <div id="welcome">
+        <div class="envelope" aria-hidden="true">&#9993;&#65039;</div>
+        <h2>Dear traveller,</h2>
+        <p>Name a city and we'll write back with the weather.</p>
+      </div>
+
+      <div id="result" hidden>
+        <p class="small">Greetings from</p>
+        <h2 id="place"></h2>
+        <p id="local-time"></p>
+        <div class="big" id="temperature"></div>
+        <p id="description"></p>
+        <p id="feels-like"></p>
+        <div class="stats">
+          <div><small>Humidity</small><b id="humidity"></b></div>
+          <div><small>Wind</small><b id="wind"></b></div>
+        </div>
+      </div>
     </div>
 
-    <div class="address">
-      <div class="stamp" aria-hidden="true">&#9728;&#65039;</div>
+    <form class="address" id="search-form">
+      <div class="stamp">
+        <span id="stamp-emoji" aria-hidden="true">&#9728;&#65039;</span>
+        <img id="stamp-icon" alt="" hidden>
+      </div>
       <label for="city">To:</label>
       <input id="city" type="text" placeholder="Type a city">
-      <button type="button">Search</button>
+      <button type="submit">Search</button>
+      <p class="problem" id="problem" role="alert" hidden></p>
       <div class="rule"></div>
-    </div>
+    </form>
   </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
